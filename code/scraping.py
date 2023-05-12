@@ -44,7 +44,7 @@ def timedeltas(start='2022-06-24 06:00:00',last="2022-07-01 06:00:00",hour_delta
     return start_list, end_list
 
 
-def append_to_csv(tweet, fileName):
+def append_to_csv(tweet, fileName='raw_data_placeholder'):
     '''
     Writing the CSV for Snscrape
     '''
@@ -61,21 +61,16 @@ def append_to_csv(tweet, fileName):
     csvFile.close()
     return
 
-def snscrape(num_tweets=149,start_date='2023-03-05T06:00:00.000Z',end_date='2023-03-06T06:00:00.000Z', hour_delta=8,min_gap=10,filename='run1.csv',make_csv=True):
+def snscrape(num_tweets=149,start_date='2023-03-05T06:00:00.000Z',end_date='2023-03-06T06:00:00.000Z', hour_delta=8,min_gap=10,filename='raw_data_placeholder',make_csv=True):
     '''
     Selects a maximum of num_tweets per section defined by timedeltas, saves it to a CSV and returns it.
     '''
     start_list, end_list = timedeltas(start=start_date,last=end_date,hour_delta=hour_delta,min_gap=min_gap)
 
-    # Create file, create headers for the data you want to save, in this example, we only want save these columns in our dataset
-
-    try:
-        with open(filename, "a", newline="", encoding='utf-8') as csvFile:
-            csvWriter = csv.writer(csvFile)
-            csvWriter.writerow(['datetime', 'username', 'text'])
-            csvFile.close()
-    except FileExistsError:
-        pass
+    with open(filename, "w", newline="", encoding='utf-8') as csvFile:
+        csvWriter = csv.writer(csvFile)
+        csvWriter.writerow(['datetime', 'username', 'text'])
+        csvFile.close()
 
     # Using TwitterSearchScraper to scrape data and append tweets to list
     for i in range(len(start_list)):

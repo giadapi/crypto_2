@@ -18,6 +18,7 @@ def scores_bert(sample_text):
     '''
     Runs a string through the model to analyse sentiment.
     '''
+    model_bert = initialize_model()
     MODEL_bert = f"ElKulako/cryptobert"
     tokenizer_bert = AutoTokenizer.from_pretrained(MODEL_bert)
     encoded_input_bert = tokenizer_bert(sample_text, return_tensors='pt')

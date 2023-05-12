@@ -1,8 +1,12 @@
 from module_imports import *
 
 def update():
+
     ''' This function should be run daily to enable the database to be updated. It takes no inputs and both reads and overwrites the current csv containing the data.
     '''
+    # Update Snscrape
+    # os.system('pip install --upgrade git+https://github.com/JustAnotherArchivist/snscrape.git')
+
     # Read most recent data
     old_tweet_data = pd.read_csv("~/code/giadapi/crypto_2/data/processed_data/sentiment_per_tweet.csv",lineterminator='\n',index_col=0)
     old_daily_data = pd.read_csv("~/code/giadapi/crypto_2/data/processed_data/sentiment_per_day.csv",lineterminator='\n',index_col=0)
@@ -12,12 +16,18 @@ def update():
     last_time_updated = old_tweet_data.iloc[-1,datetime_idx]
     date_now = str(datetime.now().date())
 
-    print(f'Date is now {date_now}. Updating last occurred {last_time_updated}.')
-    print('Updating tweets...')
+    # Small edit for bug fixes
+    scraping = 'done'
+    if scraping == 'done':
+        new_raw_tweet_data = pd.read_csv(f'data/raw_data/scraped_{last_time_updated[:10]}_until_{date_now}.csv')
+        print('Tweets are up to date')
+    else:
+        print(f'Date is now {date_now}. Updating last occurred {last_time_updated}.')
+        print('Updating tweets...')
 
-    new_raw_tweet_data = snscrape(num_tweets=149,start_date=last_time_updated,end_date=None, hour_delta=8,min_gap=10,filename=f'../data/raw_data/scraped_{last_time_updated[:10]}_until_{date_now}.csv',make_csv=True)
+        new_raw_tweet_data = snscrape(num_tweets=149,start_date=last_time_updated,end_date=None, hour_delta=8,min_gap=10,filename=f'~/code/giadapi/crypto_2/data/raw_data/scraped_{last_time_updated[:10]}_until_{date_now}.csv',make_csv=True)
 
-    print('Scraping completed.')
+        print('Scraping completed.')
 
     new_raw_tweet_data = new_raw_tweet_data.rename(columns={'text\r':'text'})
     new_raw_tweet_data['datetime'] = pd.to_datetime(new_raw_tweet_data['datetime'])
@@ -33,8 +43,6 @@ def update():
     new_preproc_tweet_data['process_text'] = new_preproc_tweet_data['text'].apply(preprocess)
 
     # Load the model and run all tweets through model
-
-    initialize_model()
 
     print('Analysing sentiment...')
 

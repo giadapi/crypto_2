@@ -17,3 +17,4 @@ from scraping import snscrape, append_to_csv, hour_rounder, timedeltas
 from preprocessing import remove_spam, preprocess
 from processing import initialize_model, scores_bert
 from daily_conversion import daily_data, tweet_daily_rate
+import os
